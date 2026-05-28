@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>4volts Adware Remover (Real WebADB)</title>
+    <title>4volts Adware Remover Portal (WebUSB)</title>
+    <!-- Tailwind CSS for modern UI -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @keyframes subtle-pulse {
@@ -13,9 +15,9 @@
         }
         .animate-subtle-pulse { animation: subtle-pulse 2s infinite; }
         .log-box::-webkit-scrollbar { width: 6px; }
-        .log-box::-webkit-scrollbar-track { background: #1f2937; rounded: 4px;}
-        .log-box::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
-        .log-box::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+        .log-box::-webkit-scrollbar-track { background: #f1f1f1; rounded: 4px;}
+        .log-box::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
+        .log-box::-webkit-scrollbar-thumb:hover { background: #555; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
@@ -31,7 +33,7 @@
                     <i data-lucide="x-circle" class="w-4 h-4"></i>
                     <span>Not Connected</span>
                 </span>
-                <span class="text-sm bg-blue-700 px-3 py-1 rounded-full shadow-inner font-mono text-xs">WebADB Engine Active</span>
+                <span class="text-sm bg-blue-700 px-3 py-1 rounded-full shadow-inner">v4.0 (Tango v2.6)</span>
             </div>
         </div>
     </header>
@@ -39,7 +41,6 @@
     <main class="flex-grow max-w-6xl mx-auto w-full p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
         
         <div class="md:col-span-2 space-y-6">
-            
             <!-- Tool 1: Device Connection -->
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                 <div class="flex items-center space-x-3 mb-2">
@@ -48,7 +49,7 @@
                     </div>
                     <h2 class="text-lg font-semibold">1. Sambungkan Peranti (WebUSB)</h2>
                 </div>
-                <p class="text-gray-600 text-sm mb-4">Sistem ini menggunakan <b>RSA Crypto Handshake</b>. Sila pastikan skrin telefon anda menyala untuk menekan butang <i>Allow</i>.</p>
+                <p class="text-gray-600 text-sm mb-4">Pastikan <b>USB Debugging</b> dihidupkan pada telefon anda dan skrin telefon sedang menyala.</p>
                 
                 <div class="flex flex-col sm:flex-row items-center gap-4">
                     <button id="btnConnect" class="animate-subtle-pulse bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition duration-200 flex items-center space-x-2 shadow-md w-full sm:w-auto justify-center">
@@ -62,6 +63,7 @@
                 </div>
             </div>
 
+            <!-- Tool 2: Scanner -->
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 opacity-50 pointer-events-none transition-opacity duration-300" id="tool2Section">
                 <div class="flex items-center space-x-3 mb-2">
                     <div class="bg-purple-100 text-purple-600 p-2 rounded-lg">
@@ -77,14 +79,14 @@
                     </button>
                 </div>
 
-                <!-- Terminal / Log Box -->
-                <div class="bg-gray-900 rounded-lg p-3 relative h-56 flex flex-col">
+                <!-- Terminal -->
+                <div class="bg-gray-900 rounded-lg p-3 relative h-48 flex flex-col">
                     <div class="text-xs text-gray-400 mb-2 border-b border-gray-700 pb-1 flex justify-between">
-                        <span>ADB Terminal Log (Real-time)</span>
+                        <span>ADB Terminal Log</span>
                         <span id="terminalStatus" class="text-yellow-400">Menunggu sambungan...</span>
                     </div>
                     <div id="terminalLog" class="log-box flex-grow overflow-y-auto font-mono text-sm text-green-400 space-y-1">
-                        <!-- Logs will appear here -->
+                        <!-- Logs -->
                     </div>
                 </div>
 
@@ -97,59 +99,65 @@
 
         <div class="md:col-span-1">
             <div class="bg-amber-50 p-6 rounded-xl border border-amber-200 shadow-sm h-full relative overflow-hidden">
-                <i data-lucide="cpu" class="absolute -bottom-4 -right-4 w-32 h-32 text-amber-100 opacity-50 z-0"></i>
+                <i data-lucide="shield-alert" class="absolute -bottom-4 -right-4 w-32 h-32 text-amber-100 opacity-50 z-0"></i>
                 <h3 class="font-bold text-amber-900 text-lg flex items-center space-x-2 mb-6 relative z-10">
-                    <i data-lucide="terminal-square" class="w-6 h-6 text-amber-600"></i>
-                    <span>Status Enjin WebADB</span>
+                    <i data-lucide="info" class="w-6 h-6 text-amber-600"></i>
+                    <span>Status Sistem</span>
                 </h3>
                 <div class="relative z-10 text-sm text-amber-900 space-y-4">
-                    <p>Sistem ini kini dikuasakan oleh <strong class="bg-amber-200 px-1 rounded">@yume-chan/adb</strong>.</p>
-                    <ul class="list-disc list-inside space-y-2 mt-2">
-                        <li>Komunikasi 100% berlaku dalam <i>browser</i>.</li>
-                        <li>Sistem mencipta & menyimpan RSA Key secara automatik (IndexedDB).</li>
-                        <li>Boleh menghantar sebarang arahan ADB *Shell*.</li>
+                    <p>Sistem ini dikuasakan oleh <strong>Tango ADB (v2.6)</strong>.</p>
+                    <ul class="list-disc list-inside">
+                        <li>Host GitHub Pages (HTTPS) membenarkan akses WebUSB.</li>
+                        <li>Sistem menjana RSA Key untuk melepasi sekuriti Android.</li>
                     </ul>
-                    <div class="mt-6 p-3 bg-red-100 border border-red-200 rounded text-red-800 text-xs font-semibold">
-                        PENTING UNTUK WINDOWS:<br>Jika Chrome tidak dapat membaca peranti, anda MESTI install <i>WinUSB Driver</i> menggunakan aplikasi Zadig.
-                    </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <script type="module">
-        // 1. IMPORT LIBRARY WEBADB SEBENAR DARI ESM.SH (CDN)
-        // Kita import modul yang diperlukan secara terus tanpa perlu Node.js/Vite
-        import { AdbDaemonWebUsbDeviceManager } from 'https://esm.sh/@yume-chan/adb-backend-webusb@0.0.22';
-        import { Adb } from 'https://esm.sh/@yume-chan/adb@0.0.22';
-        import { AdbWebCredentialStore } from 'https://esm.sh/@yume-chan/adb-credential-web@0.0.22';
-        import { DecodeUtf8Stream } from 'https://esm.sh/@yume-chan/stream-extra@0.0.22';
-
-        // Render Icons
+    <!-- SCRIPT 1: UI Asas (Dilaksanakan serta merta tanpa bergantung pada library) -->
+    <script>
+        // Render ikon supaya UI sentiasa nampak kemas
         lucide.createIcons();
 
-        // 2. PEMBOLEHUBAH GLOBAL
-        let adbInstance = null;
-        let isConnected = false;
-
-        // Pangkalan data Adware Sebenar
-        const blacklistAdware = [
-            { pkg: "com.scam.cleaner", name: "Fake Phone Cleaner" },
-            { pkg: "com.fake.weather", name: "Adware Weather App" },
-            { pkg: "com.heytap.browser", name: "Bloatware Browser" },
-            { pkg: "com.miui.analytics", name: "Xiaomi Analytics Bloatware" },
-            { pkg: "com.facebook.services", name: "FB Services (Test Item)" } // Tambahan utk test
-        ];
-
-        const terminalLog = document.getElementById('terminalLog');
-        function logMsg(message, isError = false) {
+        // Jadikan fungsi log terminal mudah diakses
+        window.logMsg = function(message, isError = false) {
+            const terminalLog = document.getElementById('terminalLog');
             const time = new Date().toLocaleTimeString();
             const color = isError ? 'text-red-400' : 'text-green-400';
             terminalLog.innerHTML += `<div class="${color}">[${time}] > ${message}</div>`;
             terminalLog.scrollTop = terminalLog.scrollHeight;
-        }
+        };
 
-        // FUNGSI BANTUAN: Membaca output (stream) dari arahan ADB
+        window.logMsg("Memuatkan library enjin Tango ADB...");
+    </script>
+
+    <!-- SCRIPT 2: Logik WebADB (Menarik kod terbaru dari ESM.sh) -->
+    <script type="module">
+        // 1. IMPORT PAKEJ TERBARU DAN BETUL (Tango v2.6.0)
+        import { Adb, AdbDaemonTransport } from 'https://esm.sh/@yume-chan/adb@2.6.0';
+        import AdbWebCredentialStore from 'https://esm.sh/@yume-chan/adb-credential-web@2.6.0';
+        import { AdbDaemonWebUsbDeviceManager } from 'https://esm.sh/@yume-chan/adb-daemon-webusb@2.6.0';
+        import { DecodeUtf8Stream } from 'https://esm.sh/@yume-chan/stream-extra@2.6.0';
+
+        window.logMsg("Enjin ADB sedia digunakan!");
+
+        // 2. PEMBOLEHUBAH GLOBAL
+        const CredentialStore = new AdbWebCredentialStore("4volts-crypto");
+        let adbInstance = null;
+        let isConnected = false;
+
+        // Pangkalan data Adware
+        const blacklistAdware = [
+            { pkg: "com.scam.cleaner", name: "Fake Phone Cleaner" },
+            { pkg: "com.fake.weather", name: "Adware Weather App" },
+            { pkg: "com.heytap.browser", name: "Bloatware Browser" },
+            { pkg: "com.miui.analytics", name: "Xiaomi Analytics" }
+            // Letak nama pakej Facebook/Youtube di bawah jika mahu test Scan:
+            // { pkg: "com.google.android.youtube", name: "Youtube (Untuk Test Sahaja)" }
+        ];
+
+        // Fungsi bantuan: Baca Stream dari shell
         async function readAdbStream(stream) {
             const reader = stream.pipeThrough(new DecodeUtf8Stream()).getReader();
             let output = '';
@@ -165,48 +173,42 @@
             return output;
         }
 
+        // 3. FUNGSI SAMBUNG KE TELEFON
         async function connectPhone() {
             try {
-                logMsg("Memulakan enjin WebUSB...", false);
-                
-                // Periksa sokongan pelayar
+                window.logMsg("Mencari peranti WebUSB yang sah...");
                 const Manager = AdbDaemonWebUsbDeviceManager.BROWSER;
-                if (!Manager) {
-                    throw new Error("Pelayar ini tidak menyokong WebUSB.");
-                }
+                
+                if (!Manager) throw new Error("Browser ini tidak menyokong WebUSB.");
 
-                // 1. Minta pengguna pilih peranti USB
-                const device = await Manager.requestDevice();
-                if (!device) {
-                    logMsg("Sambungan dibatalkan oleh pengguna.", true);
+                // Minta izin pengguna pilih peranti
+                const backend = await Manager.requestDevice();
+                if (!backend) {
+                    window.logMsg("Pilihan dibatalkan oleh pengguna.", true);
                     return;
                 }
-                logMsg(`Peranti dikesan: ${device.name}`);
 
-                // 2. Buka sambungan USB fizikal
-                await device.connect();
-                logMsg("Membuka sambungan fizikal USB... Berjaya.");
+                window.logMsg(`Telefon dikesan. Membuka saluran komunikasi...`);
+                const connection = await backend.connect();
+                
+                window.logMsg("Sila lihat skrin telefon dan tekan 'ALLOW' (RSA Handshake)!", true);
+                
+                // Urusan Kriptografi RSA & Login
+                const transport = await AdbDaemonTransport.authenticate({
+                    serial: backend.serial,
+                    connection,
+                    credentialStore: CredentialStore,
+                });
 
-                // 3. Siapkan RSA Key (Secara automatik disimpan di browser)
-                logMsg("Menyediakan Kunci RSA (Handshake)...");
-                logMsg("PERHATIAN: Sila lihat skrin telefon anda dan tekan 'ALLOW'!", true);
-                
-                const credentialStore = new AdbWebCredentialStore("4volts-adb");
-                
-                // 4. Mula berhubung dengan protokol ADB
-                const connection = await device.connectAdb({ credentialStore });
-                
-                // 5. Cipta instance ADB
-                adbInstance = await Adb.create(connection);
-                
-                // JIKA BERJAYA SAMPAI SINI:
+                // Cipta instance untuk hantar command
+                adbInstance = new Adb(transport);
                 isConnected = true;
                 
-                // Kemaskini UI
+                // Ubah antaramuka
                 document.getElementById('btnConnect').classList.add('hidden');
                 document.getElementById('connectionBox').classList.remove('hidden');
                 document.getElementById('connectionBox').classList.add('flex');
-                document.getElementById('deviceName').innerText = device.name;
+                document.getElementById('deviceName').innerText = `Bersambung`;
                 
                 const headerStatus = document.getElementById('headerStatus');
                 headerStatus.classList.replace('bg-red-500', 'bg-green-500');
@@ -217,42 +219,44 @@
                 document.getElementById('terminalStatus').innerText = "Sedia.";
                 document.getElementById('terminalStatus').className = "text-green-400";
                 
-                logMsg(`BERJAYA! Sistem telah mendapat akses ADB sepenuhnya.`);
+                window.logMsg(`BERJAYA! Sekuriti Android dilepasi.`);
 
             } catch (error) {
-                logMsg(`RALAT: ${error.message}`, true);
-                console.error(error);
-                if(error.message.includes("Access denied")) {
-                    logMsg("Tips: Di Windows, guna perisian Zadig untuk tukar driver ke 'WinUSB'.", true);
+                window.logMsg(`RALAT: ${error.message}`, true);
+                if (error.message.toLowerCase().includes("busy")) {
+                    window.logMsg("Tips: Telefon sedang digunakan oleh program lain. Cabut dan cucuk semula.", true);
                 }
             }
         }
 
+        // 4. FUNGSI IMBASAN SEBENAR (REAL-TIME)
         async function scanDevice() {
             if (!isConnected || !adbInstance) return;
             
             const btnScan = document.getElementById('btnScan');
             btnScan.disabled = true;
             btnScan.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Sedang Mengimbas...</span>`;
+            lucide.createIcons();
+            
+            window.logMsg("Membaca data: $ pm list packages -3");
             
             try {
-                // 1. HANTAR ARAHAN ADB SEBENAR KE TELEFON
-                logMsg("$ pm list packages -3");
+                // Hantar arahan ke telefon
                 const process = await adbInstance.subprocess.spawn('pm list packages -3');
                 
-                // 2. BACA HASIL DARI TELEFON
+                // Baca balasan dari telefon
                 const outputString = await readAdbStream(process.stdout);
                 
-                // 3. PENAPISAN DATA (Data format: "package:com.whatsapp\r\n")
+                // Penapisan data: "package:com.whatsapp" -> "com.whatsapp"
                 const installedPackages = outputString.split('\n')
                     .map(line => line.trim())
                     .filter(line => line.startsWith('package:'))
                     .map(line => line.replace('package:', ''));
 
-                logMsg(`Berjaya membaca ${installedPackages.length} aplikasi pihak ketiga dari telefon.`);
-                logMsg("Membandingkan senarai aplikasi dengan pangkalan data 4volts...");
+                window.logMsg(`Terjumpa ${installedPackages.length} aplikasi pihak ketiga.`);
+                window.logMsg("Membandingkan dengan pangkalan data Adware...");
 
-                // 4. CARI PADANAN DENGAN BLACKLIST
+                // Cari jika ada aplikasi yang terpadan dengan blacklist kita
                 const adwaresFound = blacklistAdware.filter(ad => installedPackages.includes(ad.pkg));
 
                 if (adwaresFound.length > 0) {
@@ -262,7 +266,7 @@
                 }
 
             } catch (error) {
-                logMsg(`RALAT SCAN: ${error.message}`, true);
+                window.logMsg(`RALAT SCAN: ${error.message}`, true);
             } finally {
                 btnScan.disabled = false;
                 btnScan.innerHTML = `<i data-lucide="search" class="w-4 h-4"></i><span>Imbas Semula</span>`;
@@ -270,6 +274,7 @@
             }
         }
 
+        // 5. PAPAR KEPUTUSAN & FUNGSI BUANG
         function showScanResult(foundItems) {
             const resultBox = document.getElementById('scanResult');
             resultBox.classList.remove('hidden');
@@ -294,7 +299,7 @@
                             <p class="text-xs text-gray-500 font-mono">${item.pkg}</p>
                         </div>
                         <button data-pkg="${item.pkg}" class="btn-remove-adware bg-red-600 hover:bg-red-700 text-white text-sm font-bold py-2 px-3 rounded flex items-center space-x-1 transition">
-                            <i data-lucide="trash-2" class="w-4 h-4"></i><span>Force Uninstall</span>
+                            <i data-lucide="trash-2" class="w-4 h-4"></i><span>Buang</span>
                         </button>
                     </div>
                 `;
@@ -303,7 +308,7 @@
             htmlContent += `</div>`;
             resultBox.innerHTML = htmlContent;
             lucide.createIcons();
-            logMsg(`[AMARAN] Terjumpa ${foundItems.length} aplikasi adware!`, true);
+            window.logMsg(`[AMARAN] Terjumpa ${foundItems.length} adware!`, true);
         }
 
         function showCleanResult() {
@@ -315,49 +320,46 @@
                     <i data-lucide="shield-check" class="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5"></i>
                     <div>
                         <p class="font-bold text-lg">Telefon anda bersih!</p>
-                        <p class="text-sm mt-1">Sistem tidak menemui sebarang aplikasi dari senarai blacklist kami.</p>
+                        <p class="text-sm mt-1">Sistem tidak menemui sebarang aplikasi adware dari senarai kami.</p>
                     </div>
                 </div>
             `;
             lucide.createIcons();
-            logMsg("[SELESAI] Tiada aplikasi adware ditemui.");
+            window.logMsg("[SELESAI] Tiada aplikasi adware ditemui.");
         }
 
-        async function removeAdware(pkgName) {
-            if (!adbInstance) return;
-            logMsg(`$ pm uninstall -k --user 0 ${pkgName}`);
+        async function removeAdware(pkgName, buttonElement) {
+            window.logMsg(`$ pm uninstall -k --user 0 ${pkgName}`);
+            buttonElement.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Membuang...</span>`;
+            lucide.createIcons();
             
             try {
-                // Hantar arahan uninstall
                 const process = await adbInstance.subprocess.spawn(`pm uninstall -k --user 0 ${pkgName}`);
                 const response = await readAdbStream(process.stdout);
 
-                // Periksa output dari telefon
                 if (response.includes("Success")) {
-                    logMsg(`[BERJAYA] Aplikasi ${pkgName} telah dipadam!`);
-                    scanDevice(); // Auto rescan selepas berjaya buang
+                    window.logMsg(`[BERJAYA] Aplikasi ${pkgName} telah dipadam!`);
+                    scanDevice(); // Auto rescan
                 } else {
-                    logMsg(`[GAGAL] Output sistem: ${response}`, true);
+                    window.logMsg(`[GAGAL] ${response}`, true);
+                    buttonElement.innerHTML = `<i data-lucide="x" class="w-4 h-4"></i><span>Gagal</span>`;
+                    lucide.createIcons();
                 }
             } catch (error) {
-                logMsg(`[RALAT UNINSTALL] ${error.message}`, true);
+                window.logMsg(`[RALAT] ${error.message}`, true);
             }
         }
 
-        // Oleh kerana kita guna <script type="module">, kita tidak boleh guna fungsi inline HTML (seperti onclick="...").
-        // Kita mesti ikat fungsi secara manual (Event Listeners).
+        // 6. PASANG EVENT LISTENER PADA BUTANG
         document.getElementById('btnConnect').addEventListener('click', connectPhone);
         document.getElementById('btnScan').addEventListener('click', scanDevice);
         
-        // Event Delegation untuk butang 'Force Uninstall' yang dijana secara automatik
+        // Event delegation untuk butang "Buang" (kerana ia dicipta secara dinamik)
         document.getElementById('scanResult').addEventListener('click', async (e) => {
             const btn = e.target.closest('.btn-remove-adware');
             if (btn) {
                 const pkg = btn.getAttribute('data-pkg');
-                // Tukar status butang ketika loading
-                btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Membuang...</span>`;
-                lucide.createIcons();
-                await removeAdware(pkg);
+                await removeAdware(pkg, btn);
             }
         });
 
