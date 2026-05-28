@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>4volts Adware Remover Tool</title>
-    <!-- Menggunakan Tailwind CSS untuk rekaan antaramuka yang moden -->
+    <!-- Tailwind CSS for modern UI -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Ikon lucide untuk mencantikkan butang -->
+    <!-- Lucide icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Import Map untuk memuat turun library Ya-WebADB secara automatik -->
+    <!-- Import Map to automatically download Ya-WebADB libraries -->
     <script type="importmap">
     {
       "imports": {
@@ -20,7 +20,7 @@
     }
     </script>
     <style>
-        /* Animasi loading ringkas */
+        /* Simple loading animation */
         .loader {
             border: 4px solid #f3f3f3;
             border-top: 4px solid #3b82f6;
@@ -37,64 +37,68 @@
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
 
-    <!-- Header / Navigasi -->
+    <!-- Header / Navigation -->
     <header class="bg-blue-600 text-white p-4 shadow-md">
-        <div class="max-w-6xl mx-auto flex justify-between items-center">
+        <div class="max-w-6xl mx-auto flex flex-wrap gap-4 justify-between items-center">
             <div class="flex items-center space-x-2">
                 <i data-lucide="cpu" class="w-8 h-8"></i>
                 <h1 class="text-2xl font-bold">4volts Adware Remover</h1>
             </div>
-            <span class="text-sm bg-blue-700 px-3 py-1 rounded-full shadow-inner">WebUSB Beta</span>
+            <div class="flex items-center space-x-3">
+                <!-- User Hit Counter Badge -->
+                <img src="https://hits.sh/4volts.github.io/adware-remover.svg?label=Users&color=1d4ed8" alt="Hit Counter" class="rounded shadow-sm">
+                <span class="text-sm bg-blue-700 px-3 py-1 rounded-full shadow-inner">WebUSB Beta</span>
+            </div>
         </div>
     </header>
 
-    <!-- Kandungan Utama: Layout 2 Column -->
+    <!-- Main Content: 2 Column Layout -->
     <main class="flex-grow max-w-6xl mx-auto w-full p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
         
-        <!-- BAHAGIAN KIRI: Sistem / Tool (Ambil 2 Column) -->
+        <!-- LEFT SECTION: System / Tool (Takes 2 Columns) -->
         <div class="md:col-span-2 space-y-6">
             
-            <!-- Peringkat 1: Sambungan -->
+            <!-- Stage 1: Connection -->
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                <h2 class="text-lg font-semibold mb-2">Langkah 1: Sambungkan Peranti</h2>
-                <p class="text-gray-600 text-sm mb-4">Pastikan telefon sudah bersedia (rujuk nota di sebelah kanan) sebelum menyambung.</p>
+                <h2 class="text-lg font-semibold mb-2">Step 1: Connect Device</h2>
+                <p class="text-gray-600 text-sm mb-4">Ensure your phone is ready (refer to the guide on the right) before connecting.</p>
                 
                 <div class="mb-5 flex items-start space-x-3 bg-gray-50 p-3 rounded-lg border border-gray-100">
                     <input type="checkbox" id="termsCheck" class="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer">
                     <label for="termsCheck" class="text-sm text-gray-600 cursor-pointer">
-                        Saya faham bahawa alat ini menggunakan arahan sistem (ADB). Saya membenarkan 4volts mengimbas peranti saya dan saya bertanggungjawab sepenuhnya ke atas tindakan ini.
+                        I understand that this tool uses system commands (ADB). I authorize 4volts to scan my device and I am fully responsible for this action.
                     </label>
                 </div>
                 
                 <div class="flex flex-wrap items-center gap-4">
                     <button id="connectBtn" disabled class="bg-gray-400 cursor-not-allowed text-white font-medium py-3 px-6 rounded-lg transition duration-200 flex items-center space-x-2 shadow-md">
                         <i data-lucide="usb"></i>
-                        <span>Sambung Peranti Android</span>
+                        <span>Connect Android Device</span>
                     </button>
                     
                     <div id="statusBadge" class="hidden items-center space-x-2 bg-green-100 text-green-700 px-4 py-3 rounded-lg font-medium border border-green-200">
                         <i data-lucide="check-circle" class="w-5 h-5"></i>
-                        <span id="deviceName">Peranti Disambungkan</span>
+                        <span id="deviceName">Device Connected</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Peringkat 2: Imbasan & Pembuangan -->
+            <!-- Stage 2: Scan & Remove -->
             <div id="scanSection" class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 opacity-50 pointer-events-none transition-opacity duration-300">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
-                    <h2 class="text-lg font-semibold">Langkah 2: Auto-Scan & Clean</h2>
+                    <h2 class="text-lg font-semibold">Step 2: Auto-Scan & Clean</h2>
                     <button id="scanBtn" class="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-2 px-6 rounded-lg transition duration-200 flex items-center space-x-2 shadow-md">
                         <i data-lucide="search"></i>
-                        <span>Mula Imbasan (Auto-Detect)</span>
+                        <span>Start Scan (Auto-Detect)</span>
                     </button>
                 </div>
 
-                <!-- Paparan Log & Hasil -->
+                <!-- Log & Results Display -->
                 <div class="bg-gray-900 rounded-lg p-4 font-mono text-sm h-64 overflow-y-auto flex flex-col shadow-inner">
                     <div id="consoleLog" class="text-green-400 space-y-1 flex-grow">
-                        > Sistem bersedia. Sila mulakan imbasan...
+                        > System ready. Please start the scan...
                     </div>
-                    <!-- Butang Uninstall (Hanya muncul jika ada adware) -->
+                    <!-- Uninstall Button (Appears only if adware is found) -->
                     <div class="mt-4 pt-4 border-t border-gray-700 flex justify-end">
                         <button id="cleanBtn" class="hidden bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-6 rounded-lg transition duration-200 inline-flex items-center space-x-2 shadow-md">
                             <i data-lucide="trash-2"></i>
@@ -104,35 +108,35 @@
                 </div>
             </div>
 
-            <!-- Nota Panduan untuk User -->
+            <!-- User Guide Note -->
             <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg text-sm text-blue-800 shadow-sm">
-                <strong>Peringatan Keselamatan:</strong> Sistem ini telus (open-source). Ia hanya menghantar arahan ADB <code>pm uninstall</code>. Kami tidak membaca atau menyalin fail peribadi, galeri, atau kata laluan anda.
+                <strong>Security Warning:</strong> This system is transparent (open-source). It only sends the ADB <code>pm uninstall</code> command. We do not read or copy your personal files, gallery, or passwords.
             </div>
 
         </div>
 
-        <!-- BAHAGIAN KANAN: Nota Kecik / SOP Persediaan -->
+        <!-- RIGHT SECTION: SOP / Setup Guide -->
         <div class="md:col-span-1">
             <div class="bg-amber-50 p-6 rounded-xl border border-amber-200 shadow-sm h-full relative overflow-hidden">
-                <!-- Hiasan background -->
+                <!-- Background decoration -->
                 <i data-lucide="smartphone-charging" class="absolute -bottom-4 -right-4 w-32 h-32 text-amber-100 opacity-50 z-0"></i>
                 
                 <h3 class="font-bold text-amber-900 text-lg flex items-center space-x-2 mb-6 relative z-10">
                     <i data-lucide="book-open-check" class="w-6 h-6 text-amber-600"></i>
-                    <span>Panduan Persediaan</span>
+                    <span>Setup Guide</span>
                 </h3>
                 
                 <!-- Timeline Steps -->
                 <ol class="space-y-6 text-sm text-amber-900 relative z-10">
-                    <!-- Garisan penyambung tepi -->
+                    <!-- Connecting side line -->
                     <div class="absolute left-[15px] top-4 bottom-4 w-0.5 bg-amber-200 z-0"></div>
 
                     <!-- Step 1 -->
                     <li class="flex space-x-4 relative z-10 group">
                         <div class="bg-amber-400 text-amber-900 font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 shadow-sm border-2 border-white group-hover:scale-110 transition-transform">1</div>
                         <div class="pt-1">
-                            <p class="font-bold text-base text-amber-950">Aktifkan Airplane Mode</p>
-                            <p class="text-xs text-amber-700 mt-1 leading-relaxed">Tarik skrin dari atas ke bawah. Tekan butang Mod Pesawat (✈️) supaya iklan berhenti mengganggu buat sementara waktu.</p>
+                            <p class="font-bold text-base text-amber-950">Enable Airplane Mode</p>
+                            <p class="text-xs text-amber-700 mt-1 leading-relaxed">Swipe down from the top of the screen. Tap the Airplane Mode (✈️) button to temporarily stop ads from popping up.</p>
                         </div>
                     </li>
                     
@@ -140,8 +144,8 @@
                     <li class="flex space-x-4 relative z-10 group">
                         <div class="bg-amber-400 text-amber-900 font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 shadow-sm border-2 border-white group-hover:scale-110 transition-transform">2</div>
                         <div class="pt-1">
-                            <p class="font-bold text-base text-amber-950">Buka Settings > Binaan</p>
-                            <p class="text-xs text-amber-700 mt-1 leading-relaxed">Buka aplikasi <strong>Settings</strong>, cari (search) perkataan <strong>"Build"</strong> atau <strong>"Binaan"</strong>. Ketuk/Tap laju-laju 7 kali pada <em>Build Number</em>.</p>
+                            <p class="font-bold text-base text-amber-950">Open Settings > Build</p>
+                            <p class="text-xs text-amber-700 mt-1 leading-relaxed">Open the <strong>Settings</strong> app, search for the word <strong>"Build"</strong>. Tap rapidly 7 times on the <em>Build Number</em> to unlock developer mode.</p>
                         </div>
                     </li>
                     
@@ -149,8 +153,8 @@
                     <li class="flex space-x-4 relative z-10 group">
                         <div class="bg-amber-400 text-amber-900 font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 shadow-sm border-2 border-white group-hover:scale-110 transition-transform">3</div>
                         <div class="pt-1">
-                            <p class="font-bold text-base text-amber-950">On USB Debugging</p>
-                            <p class="text-xs text-amber-700 mt-1 leading-relaxed">Di carian Settings tadi, cari <strong>"USB debugging"</strong>. On suis tersebut, cucuk kabel ke PC dan tekan <strong>"Allow"</strong> pada skrin phone.</p>
+                            <p class="font-bold text-base text-amber-950">Turn On USB Debugging</p>
+                            <p class="text-xs text-amber-700 mt-1 leading-relaxed">In the Settings search, look for <strong>"USB debugging"</strong>. Turn it on, connect the cable to your PC, and tap <strong>"Allow"</strong> on your phone screen.</p>
                         </div>
                     </li>
                 </ol>
@@ -159,33 +163,32 @@
 
     </main>
 
-    <!-- Ruangan Iklan (Monetization) -->
+    <!-- Ad Space (Monetization) -->
     <div class="bg-white border-t border-gray-200 p-6 mt-4 shadow-sm">
         <div class="max-w-6xl mx-auto flex flex-col items-center justify-center">
-            <span class="text-xs text-gray-400 mb-2 font-medium tracking-wider uppercase">- Ruangan Tajaan -</span>
-            <!-- Ruangan untuk letak kod Google AdSense -->
+            <span class="text-xs text-gray-400 mb-2 font-medium tracking-wider uppercase">- Sponsored Space -</span>
+            <!-- Google AdSense Container -->
             <div id="ad-space" class="w-full max-w-[728px] h-[90px] bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400 font-medium rounded-lg hover:bg-gray-50 transition-colors">
-                [ Tempat Letak Kod Banner Google AdSense ]
+                [ Place Google AdSense Banner Code Here ]
             </div>
         </div>
     </div>
 
     <!-- Footer -->
     <footer class="bg-gray-900 text-gray-400 text-center py-6 text-sm mt-auto">
-        <p>&copy; 2026 4volts Repair. Dibina khas untuk komuniti juruteknik.</p>
+        <p>&copy; 2026 4volts Repair. Built specifically for the technician community.</p>
     </footer>
 
-    <!-- Skrip Logik (Enjin Ya-WebADB SEBENAR) -->
+    <!-- Logic Script (Real Ya-WebADB Engine) -->
     <script type="module">
-        // Import enjin teras dari internet
         import { Adb, AdbDaemonTransport } from "@yume-chan/adb";
         import AdbWebCredentialStore from "@yume-chan/adb-credential-web";
         import { AdbDaemonWebUsbDeviceManager } from "@yume-chan/adb-daemon-webusb";
 
-        // Inisialisasi ikon Lucide
+        // Initialize Lucide icons
         lucide.createIcons();
 
-        // Elemen UI
+        // UI Elements
         const termsCheck = document.getElementById('termsCheck');
         const connectBtn = document.getElementById('connectBtn');
         const statusBadge = document.getElementById('statusBadge');
@@ -195,20 +198,23 @@
         const consoleLog = document.getElementById('consoleLog');
         const cleanBtn = document.getElementById('cleanBtn');
 
-        // Pembolehubah Global Sistem ADB
+        // ADB Global Variables
         let adbInstance = null;
         let detectedApps = [];
 
-        // Senarai Hitam Adware/Bloatware (Tambah nama adware yang kau selalu jumpa kat sini)
+        // Adware/Bloatware Blacklist
+        // NOTE: Feel free to add more package names here based on your experience.
         const blacklistAdware = [
             "com.scam.cleaner",
             "com.fake.weather",
             "com.adware.browser",
             "com.qihoo.security",
-            "com.test.virus" 
+            "com.test.virus",
+            "org.telegram.messenger", // <--- Remove this later, used for testing
+            "com.shopee.my"           // <--- Remove this later, used for testing
         ];
 
-        // Logik Checkbox Terma & Syarat
+        // Terms & Conditions Checkbox Logic
         termsCheck.addEventListener('change', (e) => {
             if(e.target.checked) {
                 connectBtn.disabled = false;
@@ -221,7 +227,7 @@
             }
         });
 
-        // Fungsi mencetak log ke paparan
+        // Function to print logs to the console display
         function logToConsole(message, type = 'normal') {
             const div = document.createElement('div');
             div.textContent = `> ${message}`;
@@ -233,46 +239,62 @@
             consoleLog.scrollTop = consoleLog.scrollHeight;
         }
 
-        // FUNGSI RAHSIA: Membaca teks mentah terus dari kernel Android
+        // Execute raw text from Android kernel
         async function executeAdbCommand(command) {
-            if (!adbInstance) throw new Error("ADB tidak bersambung.");
-            const process = await adbInstance.subprocess.spawn(command);
-            let result = "";
-            const stream = process.output || process.stdout;
+            if (!adbInstance) throw new Error("ADB is not connected.");
             
-            if (stream) {
-                const reader = stream.getReader();
-                const decoder = new TextDecoder();
-                while (true) {
-                    const { value, done } = await reader.read();
-                    if (done) break;
-                    if (value) result += decoder.decode(value, { stream: true });
+            logToConsole(`Executing sub-process command: ${command}`, 'warning');
+            
+            try {
+                const process = await adbInstance.subprocess.spawn(command);
+                let result = "";
+                
+                const stream = process.stdout;
+                
+                if (stream) {
+                    const reader = stream.getReader();
+                    const decoder = new TextDecoder();
+                    
+                    while (true) {
+                        const { value, done } = await reader.read();
+                        if (done) break;
+                        if (value) result += decoder.decode(value, { stream: true });
+                    }
+                    reader.releaseLock();
+                } else {
+                    throw new Error("No output stream from device.");
                 }
+                
+                await process.exit; 
+                return result;
+
+            } catch (err) {
+                 logToConsole(`Command execution error: ${err.message}`, 'error');
+                 throw err;
             }
-            return result;
         }
 
-        // --- LANGKAH 1: SAMBUNGAN ADB SEBENAR ---
+        // --- STEP 1: ACTUAL ADB CONNECTION ---
         connectBtn.addEventListener('click', async () => {
             try {
-                logToConsole('Meminta akses WebUSB...', 'normal');
+                logToConsole('Requesting WebUSB access...', 'normal');
                 
                 if (!AdbDaemonWebUsbDeviceManager.BROWSER) {
-                    logToConsole("Browser ini tidak menyokong WebUSB (Sila guna Google Chrome).", "error");
+                    logToConsole("This browser does not support WebUSB (Please use Google Chrome).", "error");
                     return;
                 }
 
-                // Jana kunci RSA Rahsia untuk telefon
+                // Generate Secret RSA key for the phone
                 const CredentialStore = new AdbWebCredentialStore();
                 
                 const backend = await AdbDaemonWebUsbDeviceManager.BROWSER.requestDevice();
                 if (!backend) {
-                    logToConsole("Batal: Tiada peranti dipilih.", "warning");
+                    logToConsole("Cancelled: No device selected.", "warning");
                     return;
                 }
 
-                logToConsole(`Menyambung ke ${backend.serial}...`, 'warning');
-                logToConsole(`[PENTING] Sila tengok skrin phone dan tekan "ALLOW" sekarang!`, 'error');
+                logToConsole(`Connecting to ${backend.serial}...`, 'warning');
+                logToConsole(`[IMPORTANT] Please check your phone screen and tap "ALLOW" now!`, 'error');
                 
                 const connection = await backend.connect();
                 const transport = await AdbDaemonTransport.authenticate({
@@ -281,82 +303,102 @@
                     credentialStore: CredentialStore,
                 });
 
-                // Hidupkan enjin ADB
+                // Start ADB engine
                 adbInstance = new Adb(transport);
 
-                // Kemaskini UI
+                // Update UI
                 connectBtn.classList.add('hidden');
                 statusBadge.classList.remove('hidden');
                 statusBadge.classList.add('flex');
-                deviceName.textContent = `${backend.name || 'Peranti'} Disambungkan`;
+                deviceName.textContent = `${backend.name || 'Device'} Connected`;
                 
                 scanSection.classList.remove('opacity-50', 'pointer-events-none');
-                logToConsole(`Berjaya! Enjin ADB kini mengawal peranti.`, 'success');
+                logToConsole(`Success! ADB engine is now controlling the device.`, 'success');
 
             } catch (error) {
-                logToConsole(`Ralat sambungan: Telefon menolak arahan atau skrin terkunci.`, 'error');
+                logToConsole(`Connection error: The phone rejected the command or the screen is locked. Please try again.`, 'error');
                 console.error(error);
             }
         });
 
-        // --- LANGKAH 2: AUTO-DETECT BACA MEMORI SEBENAR ---
+        // --- STEP 2: ACTUAL MEMORY AUTO-DETECT ---
         scanBtn.addEventListener('click', async () => {
             cleanBtn.classList.add('hidden');
             consoleLog.innerHTML = ''; 
-            logToConsole('Menjalankan imbasan direct ke dalam sistem telefon...');
+            logToConsole('Starting scan. Please wait...');
+            
+            // Disable button during scan
+            scanBtn.disabled = true;
+            scanBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            scanBtn.innerHTML = `<div class="loader mr-2 border-white"></div> Scanning...`;
             
             try {
-                // Tembak arahan ADB sebenar ke phone
+                // Fire actual ADB command to phone
                 const rawOutput = await executeAdbCommand("pm list packages -3");
                 
-                // Susun data yang berterabur jadi senarai yang kemas
+                if (!rawOutput || rawOutput.trim() === "") {
+                     logToConsole("Warning: No applications found or command rejected by the device.", 'warning');
+                     scanBtn.disabled = false;
+                     scanBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                     scanBtn.innerHTML = `<i data-lucide="search"></i><span>Start Scan (Auto-Detect)</span>`;
+                     lucide.createIcons();
+                     return;
+                }
+
+                // Parse messy data into a clean list
                 const installedApps = rawOutput.split('\n')
                     .filter(line => line.includes('package:'))
                     .map(line => line.replace('package:', '').trim());
 
-                logToConsole(`Selesai baca. Terdapat ${installedApps.length} aplikasi pihak ketiga di-install user.`);
+                logToConsole(`Read complete. Found ${installedApps.length} third-party applications installed by the user.`);
                 
-                // Bandingkan apps dalam phone dengan Blacklist kau
+                // Compare apps in phone with Blacklist
                 detectedApps = installedApps.filter(app => blacklistAdware.includes(app));
                 
                 if(detectedApps.length > 0) {
-                    logToConsole(`AMARAN! ${detectedApps.length} Adware dikesan:`, 'error');
+                    logToConsole(`WARNING! ${detectedApps.length} Target applications detected:`, 'error');
                     detectedApps.forEach(app => {
                         logToConsole(`[!] ${app}`, 'error');
                     });
                     cleanBtn.classList.remove('hidden');
                 } else {
-                    logToConsole("Sistem Bersih! Tiada adware degil dijumpai.", 'success');
+                    logToConsole("System Clean! No suspicious applications found.", 'success');
                 }
             } catch (error) {
-                logToConsole(`Gagal membaca memori: ${error.message}`, 'error');
+                logToConsole(`Failed to read device memory. Error: ${error.message}`, 'error');
+            } finally {
+                // Re-enable scan button
+                scanBtn.disabled = false;
+                scanBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                scanBtn.innerHTML = `<i data-lucide="search"></i><span>Scan Again</span>`;
+                lucide.createIcons();
             }
         });
 
-        // --- LANGKAH 3: AUTO-UNINSTALL SEBENAR ---
+        // --- STEP 3: ACTUAL AUTO-UNINSTALL ---
         cleanBtn.addEventListener('click', async () => {
-            logToConsole('Memulakan proses auto-uninstall ke akar umbi...', 'warning');
+            logToConsole('Starting deep auto-uninstall process...', 'warning');
             cleanBtn.classList.add('opacity-50', 'pointer-events-none');
-            cleanBtn.innerHTML = `<div class="loader mr-2"></div> Membuang...`;
+            cleanBtn.innerHTML = `<div class="loader mr-2"></div> Uninstalling...`;
 
-            // Buang satu-satu secara real-time
+            // Uninstall one by one in real-time
             for (const app of detectedApps) {
-                logToConsole(`Mencabut: ${app}...`);
+                logToConsole(`Removing: ${app}...`);
                 try {
                     const result = await executeAdbCommand(`pm uninstall -k --user 0 ${app}`);
                     
                     if (result.includes("Success")) {
-                        logToConsole(`Berjaya dibuang: ${app}`, 'success');
+                        logToConsole(`Successfully removed: ${app}`, 'success');
                     } else {
-                        logToConsole(`Gagal buang ${app}: Terkunci oleh sistem.`, 'error');
+                        logToConsole(`Failed to remove ${app}: Locked by system or message: ${result}`, 'error');
                     }
                 } catch (error) {
-                    logToConsole(`Ralat membuang ${app}: ${error.message}`, 'error');
+                    logToConsole(`Error removing ${app}: ${error.message}`, 'error');
                 }
             }
             
-            logToConsole('PEMBERSIHAN SELESAI!', 'success');
-            logToConsole('Sila cabut kabel dan matikan Airplane Mode.', 'warning');
+            logToConsole('CLEANUP COMPLETE!', 'success');
+            logToConsole('Please unplug the cable and turn off Airplane Mode.', 'warning');
             cleanBtn.classList.add('hidden');
             cleanBtn.classList.remove('opacity-50', 'pointer-events-none');
             cleanBtn.innerHTML = `<i data-lucide="trash-2"></i><span>Auto-Uninstall Adware</span>`;
