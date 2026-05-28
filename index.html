@@ -9,13 +9,29 @@
     <!-- Lucide icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* Pulse animation for download button */
-        @keyframes subtle-pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
         }
-        .animate-subtle-pulse {
-            animation: subtle-pulse 2s infinite;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* Style for the terminal log */
+        #consoleLog::-webkit-scrollbar {
+            width: 8px;
+        }
+        #consoleLog::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+        #consoleLog::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 4px;
         }
     </style>
 </head>
@@ -29,9 +45,8 @@
                 <h1 class="text-2xl font-bold">4volts Adware Portal</h1>
             </div>
             <div class="flex items-center space-x-3">
-                <!-- User Hit Counter Badge -->
                 <img src="https://hits.sh/4volts.github.io/adware-remover.svg?label=Users&color=1d4ed8" alt="Hit Counter" class="rounded shadow-sm">
-                <span class="text-sm bg-blue-700 px-3 py-1 rounded-full shadow-inner">v2.0 Stable</span>
+                <span class="text-sm bg-blue-700 px-3 py-1 rounded-full shadow-inner">WebUSB Edition</span>
             </div>
         </div>
     </header>
@@ -39,57 +54,70 @@
     <!-- Main Content: 2 Column Layout -->
     <main class="flex-grow max-w-6xl mx-auto w-full p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
         
-        <!-- LEFT SECTION: Tools (Takes 2 Columns) -->
+        <!-- LEFT SECTION: WebUSB Tools (Takes 2 Columns) -->
         <div class="md:col-span-2 space-y-6">
             
-            <!-- Tool 1: Windows Batch Script Downloader -->
+            <!-- Connection Setup -->
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                <div class="flex items-center space-x-3 mb-2">
-                    <div class="bg-blue-100 text-blue-600 p-2 rounded-lg">
-                        <i data-lucide="terminal"></i>
-                    </div>
-                    <h2 class="text-lg font-semibold">1. Windows Auto-Remover (PC)</h2>
-                </div>
-                <p class="text-gray-600 text-sm mb-4">The most effective way to remove hidden pop-up ads. Download our official, safe batch script. No installation required. Runs directly on your Windows PC via ADB.</p>
+                <h2 class="text-lg font-semibold mb-2 flex items-center">
+                    <i data-lucide="usb" class="w-5 h-5 mr-2 text-blue-600"></i> Step 1: Connect Device
+                </h2>
                 
-                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4 text-sm">
-                    <p class="font-semibold text-gray-700 mb-2">How to use:</p>
-                    <ol class="list-decimal list-inside space-y-1 text-gray-600">
-                        <li>Enable <strong>USB Debugging</strong> on your phone.</li>
-                        <li>Connect phone to PC and tap <strong>Allow</strong> on the phone screen.</li>
-                        <li>Run the downloaded `4volts_Adware_Remover.bat` file on your PC.</li>
-                    </ol>
+                <div class="bg-amber-50 border-l-4 border-amber-500 p-3 mb-4 text-sm text-amber-900 shadow-sm rounded-r">
+                    <p class="font-bold flex items-center"><i data-lucide="alert-triangle" class="w-4 h-4 mr-1"></i> Windows PC Users Attention:</p>
+                    <p class="mt-1 text-xs">If you are using a Windows PC, this tool requires a specific driver (WinUSB) to talk to your phone. If the scan hangs, it means Windows is blocking it.</p>
                 </div>
 
-                <button onclick="downloadBatchScript()" class="animate-subtle-pulse bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition duration-200 flex items-center space-x-2 shadow-md w-full sm:w-auto justify-center">
-                    <i data-lucide="download"></i>
-                    <span>Download Auto-Remover Script</span>
-                </button>
-                <p class="text-xs text-gray-400 mt-2">*Requires Windows 10/11 and standard ADB drivers.</p>
+                <div class="flex items-center space-x-3 mb-4 bg-gray-50 p-3 rounded-lg border border-gray-100">
+                    <input type="checkbox" id="liabilityCheck" class="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+                    <label for="liabilityCheck" class="text-sm text-gray-700">I understand this tool uses ADB commands to uninstall apps. I take full responsibility.</label>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button id="connectBtn" disabled class="bg-gray-400 text-white font-medium py-2 px-6 rounded-lg transition duration-200 flex items-center space-x-2 cursor-not-allowed">
+                        <i data-lucide="plug"></i>
+                        <span>Connect via WebUSB</span>
+                    </button>
+                    
+                    <div id="statusBadge" class="hidden items-center space-x-2 bg-green-100 text-green-700 px-4 py-2 rounded-lg font-medium border border-green-200">
+                        <i data-lucide="check-circle" class="w-5 h-5"></i>
+                        <span id="deviceName">Connected</span>
+                    </div>
+                </div>
             </div>
 
-            <!-- Tool 2: Adware Package Checker -->
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                <div class="flex items-center space-x-3 mb-2">
-                    <div class="bg-purple-100 text-purple-600 p-2 rounded-lg">
-                        <i data-lucide="search-code"></i>
-                    </div>
-                    <h2 class="text-lg font-semibold">2. Suspicious App Checker</h2>
-                </div>
-                <p class="text-gray-600 text-sm mb-4">Found a weird app name in your phone's settings? Type the package name (e.g., <code class="bg-gray-100 px-1 rounded text-pink-600">com.fake.weather</code>) below to check against our database.</p>
-                
-                <div class="flex flex-col sm:flex-row gap-3">
-                    <input type="text" id="appInput" placeholder="e.g., com.scam.cleaner" class="flex-grow border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
-                    <button onclick="checkApp()" class="bg-gray-800 hover:bg-gray-900 text-white font-medium py-2 px-6 rounded-lg transition duration-200 flex items-center justify-center space-x-2 shadow-sm">
-                        <i data-lucide="search" class="w-4 h-4"></i>
-                        <span>Check App</span>
+            <!-- Terminal and Scanning -->
+            <div id="scanSection" class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 opacity-50 pointer-events-none transition-opacity duration-300">
+                <div class="flex flex-wrap justify-between items-center mb-4 gap-4">
+                    <h2 class="text-lg font-semibold flex items-center">
+                        <i data-lucide="terminal" class="w-5 h-5 mr-2 text-gray-700"></i> Step 2: Auto-Scan & Clean
+                    </h2>
+                    <button id="scanBtn" class="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-2 px-6 rounded-lg transition duration-200 flex items-center space-x-2 shadow-sm">
+                        <i data-lucide="search"></i>
+                        <span>Start Adware Scan</span>
                     </button>
                 </div>
 
-                <!-- Result Box -->
-                <div id="checkResult" class="hidden mt-4 p-4 rounded-lg font-medium flex items-start space-x-3 border">
-                    <!-- Icon and text injected via JS -->
+                <!-- Console Window -->
+                <div class="bg-gray-900 rounded-lg p-4 font-mono text-sm h-72 flex flex-col shadow-inner">
+                    <div id="consoleLog" class="text-green-400 space-y-1 overflow-y-auto flex-grow pr-2">
+                        > System initialized. Waiting for connection...
+                    </div>
+                    
+                    <!-- Action Area -->
+                    <div class="mt-3 pt-3 border-t border-gray-700 flex justify-between items-center">
+                        <span class="text-xs text-gray-500">Powered by Ya-WebADB</span>
+                        <button id="cleanBtn" class="hidden bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-6 rounded-lg transition duration-200 flex items-center space-x-2 shadow-lg animate-pulse">
+                            <i data-lucide="trash-2"></i>
+                            <span>Force Uninstall Adware</span>
+                        </button>
+                    </div>
                 </div>
+            </div>
+            
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg text-sm text-blue-800 flex items-start">
+                <i data-lucide="info" class="w-5 h-5 mr-2 mt-0.5 flex-shrink-0"></i>
+                <p><strong>Transparency Notice:</strong> This tool only reads your installed app package names and sends standard `pm uninstall` commands. We do not access or collect personal files, photos, or data.</p>
             </div>
 
         </div>
@@ -97,43 +125,37 @@
         <!-- RIGHT SECTION: Setup Guide (Manual Removal) -->
         <div class="md:col-span-1">
             <div class="bg-amber-50 p-6 rounded-xl border border-amber-200 shadow-sm h-full relative overflow-hidden">
-                <!-- Background decoration -->
                 <i data-lucide="shield-alert" class="absolute -bottom-4 -right-4 w-32 h-32 text-amber-100 opacity-50 z-0"></i>
                 
-                <h3 class="font-bold text-amber-900 text-lg flex items-center space-x-2 mb-6 relative z-10">
+                <h3 class="font-bold text-amber-900 text-lg flex items-center space-x-2 mb-6 relative z-10 border-b border-amber-200 pb-2">
                     <i data-lucide="book-open-check" class="w-6 h-6 text-amber-600"></i>
-                    <span>Manual Fix Guide</span>
+                    <span>Prerequisites</span>
                 </h3>
                 
-                <!-- Timeline Steps -->
                 <ol class="space-y-6 text-sm text-amber-900 relative z-10">
-                    <!-- Connecting side line -->
                     <div class="absolute left-[15px] top-4 bottom-4 w-0.5 bg-amber-200 z-0"></div>
 
-                    <!-- Step 1 -->
                     <li class="flex space-x-4 relative z-10 group">
                         <div class="bg-amber-400 text-amber-900 font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 shadow-sm border-2 border-white">1</div>
                         <div class="pt-1">
-                            <p class="font-bold text-base text-amber-950">Stop The Ads</p>
-                            <p class="text-xs text-amber-700 mt-1 leading-relaxed">Swipe down the notification bar. Turn on <strong>Airplane Mode</strong> to instantly stop the ads from loading over the internet.</p>
+                            <p class="font-bold text-base text-amber-950">Stop The Ads First</p>
+                            <p class="text-xs text-amber-700 mt-1 leading-relaxed">Swipe down your notification bar. Turn on <strong>Airplane Mode</strong> to stop the ads from loading and interrupting you.</p>
                         </div>
                     </li>
                     
-                    <!-- Step 2 -->
                     <li class="flex space-x-4 relative z-10 group">
                         <div class="bg-amber-400 text-amber-900 font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 shadow-sm border-2 border-white">2</div>
                         <div class="pt-1">
-                            <p class="font-bold text-base text-amber-950">Find "Blank" Apps</p>
-                            <p class="text-xs text-amber-700 mt-1 leading-relaxed">Go to <strong>Settings > Apps</strong>. Scroll to the very bottom or top. Look for an app with <strong>no name</strong> or <strong>no icon</strong>.</p>
+                            <p class="font-bold text-base text-amber-950">Unlock Developer Mode</p>
+                            <p class="text-xs text-amber-700 mt-1 leading-relaxed">Go to <strong>Settings</strong>. Search for <strong>"Build Number"</strong>. Tap it rapidly 7 times until it says you are a developer.</p>
                         </div>
                     </li>
                     
-                    <!-- Step 3 -->
                     <li class="flex space-x-4 relative z-10 group">
                         <div class="bg-amber-400 text-amber-900 font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 shadow-sm border-2 border-white">3</div>
                         <div class="pt-1">
-                            <p class="font-bold text-base text-amber-950">Force Uninstall</p>
-                            <p class="text-xs text-amber-700 mt-1 leading-relaxed">Tap on that blank app and hit <strong>Uninstall</strong>. If the button is greyed out, download the PC script on the left to force remove it.</p>
+                            <p class="font-bold text-base text-amber-950">Enable Debugging</p>
+                            <p class="text-xs text-amber-700 mt-1 leading-relaxed">Search Settings for <strong>"USB debugging"</strong> and turn it on. Connect the USB cable. Tap <strong>Allow</strong> on your phone screen when prompted.</p>
                         </div>
                     </li>
                 </ol>
@@ -142,11 +164,10 @@
 
     </main>
 
-    <!-- Ad Space (Monetization) -->
+    <!-- Ad Space -->
     <div class="bg-white border-t border-gray-200 p-6 mt-4 shadow-sm">
         <div class="max-w-6xl mx-auto flex flex-col items-center justify-center">
             <span class="text-xs text-gray-400 mb-2 font-medium tracking-wider uppercase">- Sponsored Space -</span>
-            <!-- Google AdSense Container -->
             <div id="ad-space" class="w-full max-w-[728px] h-[90px] bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400 font-medium rounded-lg hover:bg-gray-50 transition-colors">
                 [ Place Google AdSense Banner Code Here ]
             </div>
@@ -159,133 +180,203 @@
     </footer>
 
     <!-- Logic Scripts -->
-    <script>
-        // Initialize Lucide icons
+    <script type="module">
+        import { Adb } from 'https://cdn.jsdelivr.net/npm/@yume-chan/adb@0.0.22/esm/index.js';
+        import { AdbDaemonWebUsbDeviceManager } from 'https://cdn.jsdelivr.net/npm/@yume-chan/adb-daemon-webusb@0.0.22/esm/index.js';
+        import { Consumable, InspectStream } from 'https://cdn.jsdelivr.net/npm/@yume-chan/stream-extra@0.0.22/esm/index.js';
+
         lucide.createIcons();
 
-        // --- FEATURE 1: BATCH SCRIPT GENERATOR ---
-        // This generates the actual Windows .bat file content on the fly
-        const batScriptContent = `@echo off
-title 4volts Adware Remover Tool
-color 0A
+        // UI Elements
+        const liabilityCheck = document.getElementById('liabilityCheck');
+        const connectBtn = document.getElementById('connectBtn');
+        const statusBadge = document.getElementById('statusBadge');
+        const deviceNameBadge = document.getElementById('deviceName');
+        const scanSection = document.getElementById('scanSection');
+        const scanBtn = document.getElementById('scanBtn');
+        const consoleLog = document.getElementById('consoleLog');
+        const cleanBtn = document.getElementById('cleanBtn');
 
-:menu
-cls
-echo ==================================================
-echo             4VOLTS ANDROID ADWARE TOOL
-echo ==================================================
-echo  Please ensure USB Debugging is ON and connected!
-echo  Check your phone screen for the "Allow" prompt.
-echo ==================================================
-echo.
-echo  [1] List all 3rd-Party Apps (Find the virus name)
-echo  [2] Force Uninstall App (Requires package name)
-echo  [3] Exit
-echo.
-set /p pilihan="Select an option (1/2/3): "
-
-if "%pilihan%"=="1" goto list_apps
-if "%pilihan%"=="2" goto uninstall_app
-if "%pilihan%"=="3" goto exit
-
-:list_apps
-echo.
-echo ==================================================
-echo Listing installed applications...
-adb shell pm list packages -3
-echo ==================================================
-echo.
-pause
-goto menu
-
-:uninstall_app
-echo.
-echo Type the exact package name you want to remove.
-echo Example: com.fake.weather
-set /p pkg="Package name: "
-echo.
-echo Attempting to force remove %pkg%...
-adb shell pm uninstall -k --user 0 %pkg%
-echo.
-pause
-goto menu
-
-:exit
-exit`;
-
-        function downloadBatchScript() {
-            // Create a blob from the string
-            const blob = new Blob([batScriptContent], { type: 'application/bat' });
-            // Create an object URL
-            const url = URL.createObjectURL(blob);
-            
-            // Create a temporary anchor element and trigger download
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = '4volts_Adware_Remover.bat'; // The file name user gets
-            document.body.appendChild(a);
-            a.click();
-            
-            // Clean up
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-
-        // --- FEATURE 2: ADWARE DATABASE CHECKER ---
-        // 4volts Blacklist Database
+        // Blacklist (Add known bad package names here)
         const blacklistAdware = [
             "com.scam.cleaner",
             "com.fake.weather",
             "com.adware.browser",
             "com.qihoo.security",
-            "com.test.virus"
+            "com.android.virus.test" // Example
         ];
 
-        function checkApp() {
-            const inputField = document.getElementById('appInput');
-            const resultBox = document.getElementById('checkResult');
-            let packageName = inputField.value.trim().toLowerCase();
+        let adbInstance = null;
+        let detectedApps = [];
 
-            if (!packageName) {
-                // Shake effect or just ignore if empty
-                return;
-            }
-
-            resultBox.classList.remove('hidden', 'bg-red-50', 'border-red-200', 'text-red-800', 'bg-green-50', 'border-green-200', 'text-green-800');
-            resultBox.innerHTML = '';
-
-            // Check if it exists in blacklist
-            if (blacklistAdware.includes(packageName)) {
-                // WARNING
-                resultBox.classList.add('bg-red-50', 'border-red-200', 'text-red-800');
-                resultBox.innerHTML = `
-                    <i data-lucide="alert-triangle" class="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5"></i>
-                    <div>
-                        <p class="font-bold">Warning: Adware Detected!</p>
-                        <p class="text-sm mt-1"><strong>${packageName}</strong> is known to cause full-screen ads. Please download the PC script to force remove it.</p>
-                    </div>
-                `;
-            } else {
-                // SAFE / UNKNOWN
-                resultBox.classList.add('bg-green-50', 'border-green-200', 'text-green-800');
-                resultBox.innerHTML = `
-                    <i data-lucide="shield-check" class="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5"></i>
-                    <div>
-                        <p class="font-bold">Not Found in Blacklist</p>
-                        <p class="text-sm mt-1"><strong>${packageName}</strong> does not match our current adware database. If you suspect it's a virus, you can still remove it using the PC script.</p>
-                    </div>
-                `;
-            }
+        // Logger Helper
+        function logToConsole(message, type = 'normal') {
+            const div = document.createElement('div');
+            // Adding timestamp
+            const now = new Date();
+            const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
             
-            // Re-render icons inside the newly injected HTML
-            lucide.createIcons();
+            div.textContent = `[${timeStr}] > ${message}`;
+            
+            if (type === 'error') div.className = 'text-red-400 font-bold';
+            if (type === 'warning') div.className = 'text-yellow-400';
+            if (type === 'success') div.className = 'text-blue-400 font-bold';
+            
+            consoleLog.appendChild(div);
+            consoleLog.scrollTop = consoleLog.scrollHeight;
         }
 
-        // Allow pressing Enter in the input field to trigger search
-        document.getElementById('appInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                checkApp();
+        // Enable connect button on checkbox checked
+        liabilityCheck.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                connectBtn.disabled = false;
+                connectBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                connectBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+            } else {
+                connectBtn.disabled = true;
+                connectBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
+                connectBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
             }
+        });
+
+        // STEP 1: Connect via WebUSB
+        connectBtn.addEventListener('click', async () => {
+            try {
+                logToConsole('Requesting WebUSB permission...', 'normal');
+                
+                const manager = AdbDaemonWebUsbDeviceManager.BROWSER;
+                if (!manager) {
+                    throw new Error("WebUSB is not supported in this browser.");
+                }
+
+                const device = await manager.requestDevice();
+                if (!device) {
+                    logToConsole('Connection cancelled by user.', 'warning');
+                    return;
+                }
+
+                logToConsole(`Connecting to ${device.name || device.serial}...`, 'warning');
+                logToConsole('IMPORTANT: Check your phone screen. Tap "ALLOW" if prompted.', 'warning');
+
+                const connection = await device.connect();
+                
+                // Establish ADB connection
+                adbInstance = await Adb.daemon(connection);
+                
+                logToConsole(`Successfully authenticated! Device: ${device.serial}`, 'success');
+                
+                // Update UI
+                connectBtn.classList.add('hidden');
+                liabilityCheck.parentElement.classList.add('hidden');
+                statusBadge.classList.remove('hidden');
+                statusBadge.classList.add('flex');
+                deviceNameBadge.textContent = device.name ? `${device.name} Connected` : 'Device Connected';
+                
+                scanSection.classList.remove('opacity-50', 'pointer-events-none');
+                
+            } catch (error) {
+                logToConsole(`Connection Error: ${error.message}`, 'error');
+                if (error.message.includes('Unable to claim interface')) {
+                    logToConsole('WINDOWS FIX: Another program (like adb.exe or device manufacturer software) is using the phone. Try closing background apps or checking Zadig.', 'error');
+                }
+            }
+        });
+
+        // Helper to execute commands and get string output
+        async function runAdbCommand(command) {
+            if (!adbInstance) throw new Error("ADB not connected.");
+            
+            let output = '';
+            const process = await adbInstance.subprocess.spawn(command);
+            
+            // Read stdout
+            for await (const chunk of process.stdout) {
+                output += new TextDecoder().decode(chunk);
+            }
+            return output;
+        }
+
+        // STEP 2: Auto-Scan Logic
+        scanBtn.addEventListener('click', async () => {
+            if (!adbInstance) return;
+            
+            cleanBtn.classList.add('hidden');
+            cleanBtn.classList.remove('animate-pulse');
+            consoleLog.innerHTML = '';
+            
+            const originalBtnHtml = scanBtn.innerHTML;
+            scanBtn.innerHTML = `<span class="loader"></span><span class="ml-2">Scanning...</span>`;
+            scanBtn.disabled = true;
+            scanBtn.classList.add('opacity-75');
+
+            logToConsole('Pulling package list from device...');
+
+            try {
+                // Fetch list of installed third-party apps
+                const output = await runAdbCommand('pm list packages -3');
+                
+                // Parse the output (format: "package:com.example.app\n")
+                const lines = output.split('\n');
+                const installedApps = lines
+                    .filter(line => line.startsWith('package:'))
+                    .map(line => line.replace('package:', '').trim());
+
+                logToConsole(`Found ${installedApps.length} third-party apps installed.`);
+                
+                // Compare with blacklist
+                detectedApps = installedApps.filter(app => blacklistAdware.includes(app));
+                
+                if (detectedApps.length > 0) {
+                    logToConsole(`WARNING! Found ${detectedApps.length} suspected adware packages:`, 'error');
+                    detectedApps.forEach(app => {
+                        logToConsole(`[DETECTED] -> ${app}`, 'error');
+                    });
+                    logToConsole('Click the red button below to force uninstall them.', 'warning');
+                    cleanBtn.classList.remove('hidden');
+                } else {
+                    logToConsole("System Clean! No known adware from our database was found.", 'success');
+                    logToConsole("If you still see ads, look for apps with BLANK names in your Settings.", 'warning');
+                }
+
+            } catch (error) {
+                logToConsole(`Scan failed: ${error.message}`, 'error');
+            } finally {
+                // Restore button
+                scanBtn.innerHTML = originalBtnHtml;
+                scanBtn.disabled = false;
+                scanBtn.classList.remove('opacity-75');
+            }
+        });
+
+        // STEP 3: Auto-Uninstall
+        cleanBtn.addEventListener('click', async () => {
+            if (!adbInstance || detectedApps.length === 0) return;
+            
+            logToConsole('Initializing removal protocol...', 'warning');
+            cleanBtn.innerHTML = `<span class="loader"></span><span class="ml-2">Removing...</span>`;
+            cleanBtn.disabled = true;
+            cleanBtn.classList.remove('hover:bg-red-700', 'animate-pulse');
+
+            for (const app of detectedApps) {
+                logToConsole(`Attempting to uninstall: ${app}...`);
+                try {
+                    // Force uninstall command
+                    const result = await runAdbCommand(`pm uninstall -k --user 0 ${app}`);
+                    if (result.includes('Success')) {
+                        logToConsole(`SUCCESS: ${app} has been removed.`, 'success');
+                    } else {
+                        logToConsole(`FAILED to remove ${app}: ${result}`, 'error');
+                    }
+                } catch (error) {
+                    logToConsole(`Error removing ${app}: ${error.message}`, 'error');
+                }
+            }
+
+            logToConsole('CLEANUP COMPLETE! You may safely disconnect your device.', 'success');
+            cleanBtn.innerHTML = `<i data-lucide="check"></i><span>Done</span>`;
+            cleanBtn.classList.add('bg-green-600');
+            cleanBtn.classList.remove('bg-red-600');
+            lucide.createIcons();
         });
 
     </script>
