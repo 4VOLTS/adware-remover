@@ -8,6 +8,17 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Ikon lucide untuk mencantikkan butang -->
     <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Import Map untuk memuat turun library Ya-WebADB secara automatik -->
+    <script type="importmap">
+    {
+      "imports": {
+        "@yume-chan/adb": "https://esm.sh/@yume-chan/adb",
+        "@yume-chan/adb-credential-web": "https://esm.sh/@yume-chan/adb-credential-web",
+        "@yume-chan/adb-daemon-webusb": "https://esm.sh/@yume-chan/adb-daemon-webusb"
+      }
+    }
+    </script>
     <style>
         /* Animasi loading ringkas */
         .loader {
@@ -164,12 +175,17 @@
         <p>&copy; 2026 4volts Repair. Dibina khas untuk komuniti juruteknik.</p>
     </footer>
 
-    <!-- Skrip Logik -->
-    <script>
+    <!-- Skrip Logik (Enjin Ya-WebADB SEBENAR) -->
+    <script type="module">
+        // Import enjin teras dari internet
+        import { Adb, AdbDaemonTransport } from "@yume-chan/adb";
+        import AdbWebCredentialStore from "@yume-chan/adb-credential-web";
+        import { AdbDaemonWebUsbDeviceManager } from "@yume-chan/adb-daemon-webusb";
+
         // Inisialisasi ikon Lucide
         lucide.createIcons();
 
-        // Pembolehubah elemen UI
+        // Elemen UI
         const termsCheck = document.getElementById('termsCheck');
         const connectBtn = document.getElementById('connectBtn');
         const statusBadge = document.getElementById('statusBadge');
@@ -179,7 +195,11 @@
         const consoleLog = document.getElementById('consoleLog');
         const cleanBtn = document.getElementById('cleanBtn');
 
-        // Senarai Hitam Adware/Bloatware (Blacklist Database)
+        // Pembolehubah Global Sistem ADB
+        let adbInstance = null;
+        let detectedApps = [];
+
+        // Senarai Hitam Adware/Bloatware (Tambah nama adware yang kau selalu jumpa kat sini)
         const blacklistAdware = [
             "com.scam.cleaner",
             "com.fake.weather",
@@ -187,8 +207,6 @@
             "com.qihoo.security",
             "com.test.virus" 
         ];
-
-        let detectedApps = [];
 
         // Logik Checkbox Terma & Syarat
         termsCheck.addEventListener('change', (e) => {
@@ -203,7 +221,7 @@
             }
         });
 
-        // Fungsi mencetak log ke antaramuka web
+        // Fungsi mencetak log ke paparan
         function logToConsole(message, type = 'normal') {
             const div = document.createElement('div');
             div.textContent = `> ${message}`;
@@ -212,105 +230,137 @@
             if (type === 'success') div.className = 'text-blue-400 font-bold';
             
             consoleLog.appendChild(div);
-            consoleLog.scrollTop = consoleLog.scrollHeight; // Auto-scroll ke bawah
+            consoleLog.scrollTop = consoleLog.scrollHeight;
         }
 
-        // --- LANGKAH 1: FUNGSI WEBUSB ---
+        // FUNGSI RAHSIA: Membaca teks mentah terus dari kernel Android
+        async function executeAdbCommand(command) {
+            if (!adbInstance) throw new Error("ADB tidak bersambung.");
+            const process = await adbInstance.subprocess.spawn(command);
+            let result = "";
+            const stream = process.output || process.stdout;
+            
+            if (stream) {
+                const reader = stream.getReader();
+                const decoder = new TextDecoder();
+                while (true) {
+                    const { value, done } = await reader.read();
+                    if (done) break;
+                    if (value) result += decoder.decode(value, { stream: true });
+                }
+            }
+            return result;
+        }
+
+        // --- LANGKAH 1: SAMBUNGAN ADB SEBENAR ---
         connectBtn.addEventListener('click', async () => {
             try {
                 logToConsole('Meminta akses WebUSB...', 'normal');
                 
-                // KEMASKINI: Guna filter standard ADB dan tambah Vendor ID khas (Contoh: Sony 0x0FCE)
-                const device = await navigator.usb.requestDevice({
-                    filters: [
-                        { classCode: 255, subclassCode: 66, protocolCode: 1 }, // Filter 1: Standard Android ADB Interface
-                        { vendorId: 0x0fce } // Filter 2: Khas untuk Sony Xperia
-                    ]
+                if (!AdbDaemonWebUsbDeviceManager.BROWSER) {
+                    logToConsole("Browser ini tidak menyokong WebUSB (Sila guna Google Chrome).", "error");
+                    return;
+                }
+
+                // Jana kunci RSA Rahsia untuk telefon
+                const CredentialStore = new AdbWebCredentialStore();
+                
+                const backend = await AdbDaemonWebUsbDeviceManager.BROWSER.requestDevice();
+                if (!backend) {
+                    logToConsole("Batal: Tiada peranti dipilih.", "warning");
+                    return;
+                }
+
+                logToConsole(`Menyambung ke ${backend.serial}...`, 'warning');
+                logToConsole(`[PENTING] Sila tengok skrin phone dan tekan "ALLOW" sekarang!`, 'error');
+                
+                const connection = await backend.connect();
+                const transport = await AdbDaemonTransport.authenticate({
+                    serial: backend.serial,
+                    connection,
+                    credentialStore: CredentialStore,
                 });
 
-                // Jika user pilih peranti dan tekan Connect
+                // Hidupkan enjin ADB
+                adbInstance = new Adb(transport);
+
+                // Kemaskini UI
                 connectBtn.classList.add('hidden');
                 statusBadge.classList.remove('hidden');
                 statusBadge.classList.add('flex');
-                deviceName.textContent = `${device.manufacturerName || 'Peranti'} ${device.productName || 'Android'} Disambungkan`;
+                deviceName.textContent = `${backend.name || 'Peranti'} Disambungkan`;
                 
                 scanSection.classList.remove('opacity-50', 'pointer-events-none');
-                logToConsole(`Berjaya sambung ke: ${device.productName}`, 'success');
-                logToConsole(`Sila tekan butang 'Mula Imbasan'.`, 'warning');
+                logToConsole(`Berjaya! Enjin ADB kini mengawal peranti.`, 'success');
 
             } catch (error) {
-                logToConsole(`Akses ditolak atau dibatalkan: ${error.message}`, 'error');
+                logToConsole(`Ralat sambungan: Telefon menolak arahan atau skrin terkunci.`, 'error');
+                console.error(error);
             }
         });
 
-        // --- FUNGSI 2: AUTO-DETECT LOGIC ---
-        scanBtn.addEventListener('click', () => {
+        // --- LANGKAH 2: AUTO-DETECT BACA MEMORI SEBENAR ---
+        scanBtn.addEventListener('click', async () => {
             cleanBtn.classList.add('hidden');
             consoleLog.innerHTML = ''; 
-            logToConsole('Menjalankan arahan ADB: pm list packages -3');
-            logToConsole('Sedang menarik senarai aplikasi dari telefon...', 'warning');
-
-            // Simulasi masa imbasan sistem
-            setTimeout(() => {
-                logToConsole('INFO PEMBANGUNAN (DEVELOPER INFO):', 'warning');
-                logToConsole('Untuk membolehkan web ini membaca telefon pengguna awam di internet sebenar, sila integrasikan library [Ya-WebADB] di backend server anda untuk menguruskan pengesahan RSA Key.', 'normal');
-                logToConsole('Menggunakan data simulasi untuk paparan...', 'normal');
+            logToConsole('Menjalankan imbasan direct ke dalam sistem telefon...');
+            
+            try {
+                // Tembak arahan ADB sebenar ke phone
+                const rawOutput = await executeAdbCommand("pm list packages -3");
                 
-                // (Simulasi) Data aplikasi dalam telefon
-                const mockInstalledApps = [
-                    "com.whatsapp",
-                    "com.facebook.katana",
-                    "com.fake.weather",   // Bloatware 1
-                    "com.google.android.youtube",
-                    "com.test.virus",     // Bloatware 2
-                    "com.instagram.android"
-                ];
+                // Susun data yang berterabur jadi senarai yang kemas
+                const installedApps = rawOutput.split('\n')
+                    .filter(line => line.includes('package:'))
+                    .map(line => line.replace('package:', '').trim());
 
-                logToConsole(`Selesai imbas. Terdapat ${mockInstalledApps.length} aplikasi dikesan.`);
+                logToConsole(`Selesai baca. Terdapat ${installedApps.length} aplikasi pihak ketiga di-install user.`);
                 
-                // Logik tapisan dari senarai hitam
-                detectedApps = mockInstalledApps.filter(app => blacklistAdware.includes(app));
+                // Bandingkan apps dalam phone dengan Blacklist kau
+                detectedApps = installedApps.filter(app => blacklistAdware.includes(app));
                 
                 if(detectedApps.length > 0) {
-                    logToConsole(`AMARAN! ${detectedApps.length} Adware/Bloatware dikesan:`, 'error');
+                    logToConsole(`AMARAN! ${detectedApps.length} Adware dikesan:`, 'error');
                     detectedApps.forEach(app => {
                         logToConsole(`[!] ${app}`, 'error');
                     });
-                    logToConsole('Sila tekan butang merah di bawah untuk uninstall.', 'warning');
-                    
                     cleanBtn.classList.remove('hidden');
                 } else {
-                    logToConsole("Sistem Bersih! Tiada adware dari pangkalan data dijumpai.", 'success');
+                    logToConsole("Sistem Bersih! Tiada adware degil dijumpai.", 'success');
                 }
-            }, 1500); 
+            } catch (error) {
+                logToConsole(`Gagal membaca memori: ${error.message}`, 'error');
+            }
         });
 
-        // --- FUNGSI 3: AUTO UNINSTALL ---
-        cleanBtn.addEventListener('click', () => {
-            logToConsole('Memulakan proses auto-uninstall paksa...', 'warning');
+        // --- LANGKAH 3: AUTO-UNINSTALL SEBENAR ---
+        cleanBtn.addEventListener('click', async () => {
+            logToConsole('Memulakan proses auto-uninstall ke akar umbi...', 'warning');
             cleanBtn.classList.add('opacity-50', 'pointer-events-none');
             cleanBtn.innerHTML = `<div class="loader mr-2"></div> Membuang...`;
 
-            let delay = 0;
-            detectedApps.forEach((app, index) => {
-                setTimeout(() => {
-                    logToConsole(`Melaksanakan: adb shell pm uninstall -k --user 0 ${app}`);
-                    logToConsole(`Berjaya membuang: ${app}`, 'success');
-
-                    // Apabila proses terakhir selesai
-                    if (index === detectedApps.length - 1) {
-                        setTimeout(() => {
-                            logToConsole('PEMBERSIHAN SELESAI!', 'success');
-                            logToConsole('Sila cabut kabel dan matikan Airplane Mode.', 'warning');
-                            cleanBtn.classList.add('hidden');
-                            cleanBtn.classList.remove('opacity-50', 'pointer-events-none');
-                            cleanBtn.innerHTML = `<i data-lucide="trash-2"></i><span>Auto-Uninstall Adware</span>`;
-                            lucide.createIcons();
-                        }, 800);
+            // Buang satu-satu secara real-time
+            for (const app of detectedApps) {
+                logToConsole(`Mencabut: ${app}...`);
+                try {
+                    const result = await executeAdbCommand(`pm uninstall -k --user 0 ${app}`);
+                    
+                    if (result.includes("Success")) {
+                        logToConsole(`Berjaya dibuang: ${app}`, 'success');
+                    } else {
+                        logToConsole(`Gagal buang ${app}: Terkunci oleh sistem.`, 'error');
                     }
-                }, delay);
-                delay += 1200; // Jarak 1.2 saat untuk setiap app
-            });
+                } catch (error) {
+                    logToConsole(`Ralat membuang ${app}: ${error.message}`, 'error');
+                }
+            }
+            
+            logToConsole('PEMBERSIHAN SELESAI!', 'success');
+            logToConsole('Sila cabut kabel dan matikan Airplane Mode.', 'warning');
+            cleanBtn.classList.add('hidden');
+            cleanBtn.classList.remove('opacity-50', 'pointer-events-none');
+            cleanBtn.innerHTML = `<i data-lucide="trash-2"></i><span>Auto-Uninstall Adware</span>`;
+            lucide.createIcons();
         });
 
     </script>
